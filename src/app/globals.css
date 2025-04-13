@@ -1,0 +1,85 @@
+/* @import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+} */
+
+
+
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --accent-green: #48BB78;
+  --accent-teal: #4FD1C5;
+  --green-50: #F0FDF4;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Additional colors for the chat interface */
+.text-green-500 {
+  color: var(--accent-green);
+}
+
+.text-teal-400 {
+  color: var(--accent-teal);
+}
+
+.from-white {
+  --tw-gradient-from: var(--background);
+}
+
+.to-green-50 {
+  --tw-gradient-to: var(--green-50);
+}
+
+@media (prefers-color-scheme: dark) {
+  .from-white {
+    --tw-gradient-from: #0a0a0a;
+  }
+  
+  .to-green-50 {
+    --tw-gradient-to: #132e1f;
+  }
+}
