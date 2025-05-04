@@ -1,57 +1,126 @@
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-import boto3
-import os
-from langchain_community.chat_models import BedrockChat
-from langchain.chains import RetrievalQA
-from langchain_community.vectorstores import FAISS
-from langchain.embeddings import HuggingFaceEmbeddings
+he whole code// // If you want to avoid CORS issues, you can create this file at:
+// // For Next.js Pages Router: /pages/api/chat.js
+// // For Next.js App Router: /app/api/chat/route.js
 
-# Setup FastAPI
-app = FastAPI()
+// // Pages Router Version (Next.js 12 or older)
+// export default async function handler(req, res) {
+//     if (req.method !== 'POST') {
+//       return res.status(405).json({ error: 'Method not allowed' });
+//     }
+  
+//     try {
+//       const { message, session_id } = req.body;
+      
+//       // VM IP address - update with your actual VM IP
+//       const HOST = '34.31.191.81';
+      
+//       const response = await fetch(http://${HOST}:8000/query, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//           message,
+//           session_id
+//         }),
+//       });
+  
+//       if (!response.ok) {
+//         throw new Error('API response error');
+//       }
+  
+//       const data = await response.json();
+//       return res.status(200).json(data);
+//     } catch (error) {
+//       console.error('Error in chat API route:', error);
+//       return res.status(500).json({ 
+//         error: 'Failed to communicate with AI service',
+//         response: "Sorry, I'm having trouble connecting to the server. Please try again later."
+//       });
+//     }
+//   }
+  
+//   /* 
+//   // App Router Version (Next.js 13+)
+//   export async function POST(request) {
+//     try {
+//       const { message, session_id } = await request.json();
+      
+//       // VM IP address - update with your actual VM IP
+//       const HOST = '34.31.191.81';
+      
+//       const response = await fetch(http://${HOST}:8000/query, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//           message,
+//           session_id
+//         }),
+//       });
+  
+//       if (!response.ok) {
+//         throw new Error('API response error');
+//       }
+  
+//       const data = await response.json();
+//       return new Response(JSON.stringify(data), {
+//         status: 200,
+//         headers: { 'Content-Type': 'application/json' }
+//       });
+//     } catch (error) {
+//       console.error('Error in chat API route:', error);
+//       return new Response(JSON.stringify({ 
+//         error: 'Failed to communicate with AI service',
+//         response: "Sorry, I'm having trouble connecting to the server. Please try again later."
+//       }), {
+//         status: 500,
+//         headers: { 'Content-Type': 'application/json' }
+//       });
+//     }
+//   }
+//   */
 
-# Enable CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # or specify Vercel URL for stricter rules
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
-# Request model
-class QueryRequest(BaseModel):
-    message: str
-    session_id: str = None
 
-# Load vector store and embedder
-embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-vectorstore = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+// src/app/api/chat/route.js
 
-# Initialize Bedrock client
-boto3_bedrock = boto3.client(
-    service_name="bedrock-runtime",
-    region_name="us-east-1",  # update to your region
-)
-
-llm = BedrockChat(
-    client=boto3_bedrock,
-    model_id="anthropic.claude-v2",  # make sure you have access
-    model_kwargs={"temperature": 0.0}
-)
-
-# Build QA chain
-qa_chain = RetrievalQA.from_chain_type(
-    llm=llm,
-    retriever=vectorstore.as_retriever(),
-    return_source_documents=False
-)
-
-@app.post("/query")
-async def query(req: QueryRequest):
-    try:
-        result = qa_chain.run(req.message)
-        return {"response": result}
-    except Exception as e:
-        return {"error": str(e), "response": "Something went wrong"}
+export async function POST(request) {
+    try {
+      const { message, session_id } = await request.json();
+      
+      // VM IP address
+      const HOST = '34.31.191.81';
+      
+      const response = await fetch(http://${HOST}:8000/query, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message,
+          session_id
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('API response error');
+      }
+  
+      const data = await response.json();
+      return new Response(JSON.stringify(data), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (error) {
+      console.error('Error in chat API route:', error);
+      return new Response(JSON.stringify({ 
+        error: 'Failed to communicate with AI service',
+        response: "Sorry, I'm having trouble connecting to the server. Please try again later."
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  }
