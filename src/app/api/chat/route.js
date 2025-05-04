@@ -91,7 +91,7 @@ export async function POST(request) {
       const { message, session_id } = await request.json();
       
       // VM IP address
-      const HOST = '34.31.191.81';
+      const HOST = '35.86.133.57';
       
       const response = await fetch(`http://${HOST}:8000/query`, {
         method: 'POST',
