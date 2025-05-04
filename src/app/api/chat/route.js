@@ -1,4 +1,4 @@
-he whole code// // If you want to avoid CORS issues, you can create this file at:
+// // If you want to avoid CORS issues, you can create this file at:
 // // For Next.js Pages Router: /pages/api/chat.js
 // // For Next.js App Router: /app/api/chat/route.js
 
@@ -87,40 +87,40 @@ he whole code// // If you want to avoid CORS issues, you can create this file at
 // src/app/api/chat/route.js
 
 export async function POST(request) {
-    try {
-      const { message, session_id } = await request.json();
-      
-      // VM IP address
-      const HOST = '34.31.191.81';
-      
-      const response = await fetch(http://${HOST}:8000/query, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message,
-          session_id
-        }),
-      });
-  
-      if (!response.ok) {
-        throw new Error('API response error');
-      }
-  
-      const data = await response.json();
-      return new Response(JSON.stringify(data), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    } catch (error) {
-      console.error('Error in chat API route:', error);
-      return new Response(JSON.stringify({ 
-        error: 'Failed to communicate with AI service',
-        response: "Sorry, I'm having trouble connecting to the server. Please try again later."
-      }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      });
+  try {
+    const { message, session_id } = await request.json();
+
+    const HOST = '34.31.191.81'; // your EC2 public IP
+
+    const response = await fetch(`http://${HOST}:8000/query`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message,
+        session_id
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('API response error');
     }
+
+    const data = await response.json();
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  } catch (error) {
+    console.error('Error in chat API route:', error);
+    return new Response(JSON.stringify({
+      error: 'Failed to communicate with AI service',
+      response: "Sorry, I'm having trouble connecting to the server. Please try again later."
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
+}
+
