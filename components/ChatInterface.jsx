@@ -811,7 +811,7 @@ const ChatInterface = () => {
       <div className="w-full max-w-3xl px-6 py-10 flex flex-col h-screen">
         {/* Header Section */}
         <div className="mb-6 pl-6">
-          <h1 className="text-3xl font-medium text-gray-800 dark:text-gray-200 mb-2">Good morning, Naph</h1>
+          <h1 className="text-3xl font-medium text-gray-800 dark:text-gray-200 mb-2">Good morning, Shay</h1>
           <h2 className="text-4xl font-bold">
             <span className="text-green-500">What's</span>
             <span className="text-teal-400"> the mission </span>
