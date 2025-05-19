@@ -130,7 +130,7 @@ export async function POST(request) {
     const { message } = await request.json();
 
     const AZURE_URL = 'https://sharonknyabuti-ragchatbot-vxwcs.eastus2.inference.ml.azure.com/score';
-    const AZURE_API_KEY = process.env.AZURE_API_KEY || ''; // Set this securely in Vercel or .env
+    const AZURE_API_KEY = process.env.AZURE_API_KEY || '';
 
     if (!AZURE_API_KEY) {
       throw new Error('Missing Azure API key');
@@ -140,15 +140,17 @@ export async function POST(request) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${AZURE_API_KEY}`
+        'Authorization': `Bearer ${AZURE_API_KEY}`,
+        'azureml-model-deployment': 'sharonknyabuti-ragchatbot-vxwcs' // ✅ this is the fix!
       },
       body: JSON.stringify({
-        // Adjust body format if your model expects a different schema
-        input: message
+        input: message // 🔁 or change this to `inputs: [message]` if needed
       })
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Azure error response:", errorText);
       throw new Error(`Azure API failed: ${response.statusText}`);
     }
 
@@ -159,7 +161,7 @@ export async function POST(request) {
     });
 
   } catch (error) {
-    console.error('Azure API call failed:', error);
+    console.error('Azure API call failed:', error.message);
     return new Response(JSON.stringify({
       error: 'Failed to communicate with Azure model',
       response: "Sorry, the model is currently unreachable. Please try again later."
