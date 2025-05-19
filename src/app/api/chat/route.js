@@ -141,21 +141,24 @@ export async function POST(request) {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${AZURE_API_KEY}`,
-        'azureml-model-deployment': 'sharonknyabuti-ragchatbot-vxwcs' // ✅ this is the fix!
+        'azureml-model-deployment': 'sharonknyabuti-ragchatbot-vxwcs'
       },
       body: JSON.stringify({
-        input: message // 🔁 or change this to `inputs: [message]` if needed
+        inputs: [message] // ✅ most Azure ML models expect this format
       })
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("Azure error response:", errorText);
+      console.error('Azure error response:', errorText);
       throw new Error(`Azure API failed: ${response.statusText}`);
     }
 
     const data = await response.json();
-    return new Response(JSON.stringify(data), {
+
+    return new Response(JSON.stringify({
+      response: data.response || data // adjust if your model wraps output
+    }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });
@@ -171,5 +174,6 @@ export async function POST(request) {
     });
   }
 }
+
 
 
