@@ -130,17 +130,23 @@ export async function POST(request) {
   try {
     const { message } = await request.json();
 
-    const AZURE_URL = 'https://sharonknyabuti-5380-jjnwv.eastus.inference.ml.azure.com/score';
-    const AZURE_API_KEY = process.env.AZURE_API_KEY || ''; // Add this in Vercel environment variables
+    const AZURE_URL = 'https://sharonknyabuti-ragchatbot-vxwcs.eastus2.inference.ml.azure.com/score';
+    const AZURE_API_KEY = process.env.AZURE_API_KEY || ''; // Set this securely in Vercel or .env
+
+    if (!AZURE_API_KEY) {
+      throw new Error('Missing Azure API key');
+    }
 
     const response = await fetch(AZURE_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${AZURE_API_KEY}`,
-        'azureml-model-deployment': 'sharonknyabuti-5380-jjnwv-1'
+        'Authorization': `Bearer ${AZURE_API_KEY}`
       },
-      body: JSON.stringify({ input: message })
+      body: JSON.stringify({
+        // Adjust body format if your model expects a different schema
+        input: message
+      })
     });
 
     if (!response.ok) {
@@ -164,4 +170,5 @@ export async function POST(request) {
     });
   }
 }
+
 
