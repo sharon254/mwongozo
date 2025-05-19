@@ -123,7 +123,19 @@
 //     });
 //   }
 // }
+console.log("Calling Azure with message:", message);
+console.log("AZURE_API_KEY exists:", !!AZURE_API_KEY);
+try {
+  const response = await fetch(AZURE_URL, { ... });
 
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Azure API failed: ${response.statusText} - ${errorText}`);
+  }
+} catch (error) {
+  console.error("Azure fetch failed:", error.message);
+  ...
+}
 
 
 export async function POST(request) {
